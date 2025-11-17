@@ -1,0 +1,35 @@
+---
+title: "clean data"
+format: pdf
+editor: visual
+---
+
+```{r}
+library(tidyverse)
+
+prizes_raw <- readr::read_csv(
+  "https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-10-28/prizes.csv"
+)
+head(prizes_raw)
+glimpse(prizes_raw)
+```
+
+```{r}
+library(tidyverse)
+library(stringr)
+
+prizes_clean <- prizes_raw |>
+  distinct() |>
+  mutate(across(where(is.character), str_trim)) |>
+  filter(!is.na(prize_year)) |>
+  mutate(
+    prize_genre = as.factor(prize_genre),
+    prize_institution = as.factor(prize_institution),
+    person_role = as.factor(person_role),
+    gender = as.factor(gender),
+    ethnicity_macro = as.factor(ethnicity_macro)
+  )
+
+write_csv(prizes_clean, "~/Downloads/cleaned_prizes.csv")
+prizes_clean
+```
